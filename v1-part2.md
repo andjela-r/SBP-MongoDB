@@ -1,6 +1,6 @@
 # Upiti pre optimizacije
 
-## Upit 1: Kakav je uticaj prvih ciljeva na ishod meča?
+### Upit 1: Kakav je uticaj prvih ciljeva na ishod meča?
 ```
 db.clean_teamstats.aggregate([
    {
@@ -53,10 +53,10 @@ Vreme izvršavanja nije moguće odrediti zbog Time Out-a. Rezultat se dobija dod
 db.clean_teamstats.createIndex({ matchid: 1 });
 db.clean_player_stats.createIndex({ matchid: 1 });
 ```
-Vreme izvršavanja: 01:00.741s
+Vreme izvršavanja: 01:00.741
 Broj dokumenata: 32
 
-Upit 2: Koji su 10 najčešće korišćenih item-a u pobedničkim mečevima i njihov uticaj na performanse? 
+### Upit 2: Koji su 10 najčešće korišćenih item-a u pobedničkim mečevima i njihov uticaj na performanse? 
 ```
 db.clean_player_stats.aggregate([
  { $match: { win: 1 } },
@@ -87,8 +87,132 @@ db.clean_player_stats.aggregate([
  { $sort: { count: -1 } },
  { $limit: 10 }
 ]);
+```
 
-Vreme izvršavanja: 00:08.213s
+Vreme izvršavanja: 00:08.213
 Broj dokumenata: 10
 
-Upit 3: Koji su 10 najčešće korišćenih item-a i njihov uticaj na prosečnu štetu?
+### Upit 3: Koji su 100 najčešće korišćenih item-a i njihov uticaj na prosečnu štetu?
+db.clean_player_stats.aggregate([
+   {
+       $project: {
+           items: ["$item1", "$item2", "$item3", "$item4", "$item5", "$item6"],
+           totdmgdealt: 1
+       }
+   },
+   {
+       $unwind: "$items"
+   },
+   {
+       $group: {
+           _id: "$items",
+           avgDamage: { $avg: "$totdmgdealt" },
+           count: { $sum: 1 }
+       }
+   },
+   {
+       $sort: { avgDamage: -1 }
+   },
+   {
+       $limit: 100
+   },
+   {
+       $project: {
+           _id: 0,
+           item: "$_id",
+           avgDamage: 1,
+           count: 1
+       }
+   }
+]);
+```
+Vreme izvršavanja: 00:10.829
+Broj dokumenata: 100
+
+### Upit 4: Koji je uticaj upravljanja resursima džungle na ishod meča?
+```
+db.clean_player_stats.aggregate([
+   { $match: { win: { $exists: true } } },
+  
+   {
+       $group: {
+           _id: "$win",
+           avgTotalVisionScore: { $avg: { $round: ["$visionscore", 2] } },
+           avgTotalHeal: { $avg: { $round: ["$totdmgtochamp", 2] } },
+           avgTotalDamageDealt: { $avg: { $round: ["$totdmgdealt", 2] } },
+           avgTotalDamageToChamps: { $avg: { $round: ["$totdmgtochamp", 2] } },
+           avgTotalTurretKills: { $avg: { $round: ["$totminionskilled", 2] } },
+           avgTotalCS: { $avg: { $round: ["$totminionskilled", 2] } },  // Creep Score (Farm)
+           avgTotalWardsPlaced: { $avg: { $round: ["$neutralminionskilled", 2] } },
+           avgTotalWardsKilled: { $avg: { $round: ["$neutralminionskilled", 2] } },
+           avgOwnJungleCS: { $avg: { $round: ["$ownjunglekills", 2] } },
+           avgEnemyJungleCS: { $avg: { $round: ["$enemyjunglekills", 2] } },
+           count: { $sum: 1 }
+       }
+   },
+  
+   {
+       $project: {
+           _id: 0,
+           win: "$_id",
+           avgTotalVisionScore: { $round: ["$avgTotalVisionScore", 2] },
+           avgTotalHeal: { $round: ["$avgTotalHeal", 2] },
+           avgTotalDamageDealt: { $round: ["$avgTotalDamageDealt", 2] },
+           avgTotalDamageToChamps: { $round: ["$avgTotalDamageToChamps", 2] },
+           avgTotalTurretKills: { $round: ["$avgTotalTurretKills", 2] },
+           avgTotalCS: { $round: ["$avgTotalCS", 2] },
+           avgTotalWardsPlaced: { $round: ["$avgTotalWardsPlaced", 2] },
+           avgTotalWardsKilled: { $round: ["$avgTotalWardsKilled", 2] },
+           avgOwnJungleCS: { $round: ["$avgOwnJungleCS", 2] },
+           avgEnemyJungleCS: { $round: ["$avgEnemyJungleCS", 2] },
+           count: 1
+       }
+   },
+  
+   {
+       $sort: { win: 1 }
+   }
+]);
+```
+Vreme izvršavanja: 00:12.882
+Broj dokumenata: 2
+
+### Upit 5: Koje su najefikasnije uloge na osnovu ekonomije?
+```
+db.clean_player_stats.aggregate([
+   {
+       $lookup: {
+           from: "clean_participants",
+           localField: "id",
+           foreignField: "id",
+           as: "participant"
+       }
+   },
+   {
+       $unwind: "$participant"
+   },
+   {
+       $group: {
+           _id: "$participant.role",
+           avgGoldEarned: { $avg: "$goldearned" },
+           avgGoldSpent: { $avg: "$goldspent" },
+           avgTotalMinionsKilled: { $avg: "$totminionskilled" },
+           avgNeutralMinionsKilled: { $avg: "$neutralminionskilled" }
+       }
+   },
+   {
+       $project: {
+           _id: 0,
+           role: "$_id",
+           avgGoldEarned: 1,
+           avgGoldSpent: 1,
+           avgTotalMinionsKilled: 1,
+           avgNeutralMinionsKilled: 1
+       }
+   },
+   {
+       $sort: { avgGoldEarned: -1 }  // Sortiraj uloge prema prosečnoj zaradi zlata
+   }
+]);
+```
+Vreme izvršavanja: 02:55.026
