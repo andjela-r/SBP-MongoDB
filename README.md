@@ -6,7 +6,7 @@ Projekat iz predmeta Sistemi baza podataka.
 - Nakon što je napravljena nova baza podataka i kolekcije, import se može raditi putem skripte **import-data.py** ili ručno.  
 
 ## Sekcije
-1. **Upiti [pre](https://github.com/andjela-r/SBP-MongoDB/blob/main/v1-part1.md) i posle optimizacije**
-2. **Korišćenje design shema**
-3. **Indeksi**
+1. **Upiti [pre](https://github.com/andjela-r/SBP-MongoDB/blob/main/v1-part1.md) i [posle](https://github.com/andjela-r/SBP-MongoDB/blob/main/v2-part1.md) optimizacije**
+2. **Korišćenje [design shema](https://github.com/andjela-r/SBP-MongoDB/blob/main/design-shema.ipynb)**
+3. **[Indeksi](https://github.com/andjela-r/SBP-MongoDB/blob/main/indexes.md)**
 4. **Poređenje rezultata pre i posle optimizacije**
