@@ -54,7 +54,6 @@ db.clean_teamstats.createIndex({ matchid: 1 });
 db.clean_player_stats.createIndex({ matchid: 1 });
 ```
 Vreme izvršavanja: 01:00.741
-Broj dokumenata: 32
 
 ### Upit 2: Koji su 10 najčešće korišćenih item-a u pobedničkim mečevima i njihov uticaj na performanse? 
 ```
@@ -90,7 +89,6 @@ db.clean_player_stats.aggregate([
 ```
 
 Vreme izvršavanja: 00:08.213
-Broj dokumenata: 10
 
 ### Upit 3: Koji su 100 najčešće korišćenih item-a i njihov uticaj na prosečnu štetu?
 ```
@@ -128,7 +126,6 @@ db.clean_player_stats.aggregate([
 ]);
 ```
 Vreme izvršavanja: 00:10.829
-Broj dokumenata: 100
 
 ### Upit 4: Koji je uticaj upravljanja resursima džungle na ishod meča?
 ```
@@ -176,7 +173,6 @@ db.clean_player_stats.aggregate([
 ]);
 ```
 Vreme izvršavanja: 00:12.882
-Broj dokumenata: 2
 
 ### Upit 5: Koje su najefikasnije uloge na osnovu ekonomije?
 ```
