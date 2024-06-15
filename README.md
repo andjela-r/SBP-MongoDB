@@ -10,3 +10,4 @@ Projekat iz predmeta Sistemi baza podataka.
 2. **Korišćenje [design shema](https://github.com/andjela-r/SBP-MongoDB/blob/main/design-shema.ipynb)**
 3. **[Indeksi](https://github.com/andjela-r/SBP-MongoDB/blob/main/indexes.md)**
 4. **Poređenje rezultata pre i posle optimizacije**
+![poredjenje](https://github.com/andjela-r/SBP-MongoDB/blob/main/images/initvsopt.png)
