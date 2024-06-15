@@ -166,6 +166,60 @@ db.op_participants.aggregate([
 3. Select all champions and their “KDA ratio” based on which side they are playing.
 
 ```
+use league_of_legends
+db.opp_playerstats.aggregate([
+  {
+    $set: {
+      side: {
+        $cond: { 
+          if: { $lte: ["$player", 5] },
+          then: "blue",
+          else: "red"
+        }
+      }
+    }
+  },
+  {
+    $project: {
+      champion: "$champion",
+      side: 1,
+      kdaRatio: {
+        $cond: {
+          if: { $eq: ["$deaths", 0] },
+          then: { $sum: ["$kills", "$assists"] },
+          else: { $divide: [{ $sum: ["$kills", "$assists"] }, "$deaths"] }
+        }
+      },
+    }
+  },
+  {
+    $group: {
+      _id: {
+        champion: "$champion",
+        side: "$side"
+      },
+      avgKdaRatio: { $avg: "$kdaRatio" },
+    }
+  },
+  {
+    $project: {
+      _id: 0,
+      champion: "$_id.champion",
+      side: "$_id.side",
+      avgKdaRatio: { $round: ["$avgKdaRatio", 2] }
+    }
+  },
+  {
+    $sort: { champion: 1, avgKdaRatio: -1 }
+  }
+]);
+
+
+```
+
+4. Select all champions, their main damage type where the player position is "MID" on blue side and the rate at which both sides on MID lane have the same damage type champions.
+
+```
 db.opp_playerstats.createIndex({ "matchid": 1, "player": 1 })
 db.opp_playerstats.createIndex({ "id": 1, "win": 1 })
 
