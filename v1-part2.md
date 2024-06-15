@@ -93,6 +93,7 @@ Vreme izvršavanja: 00:08.213
 Broj dokumenata: 10
 
 ### Upit 3: Koji su 100 najčešće korišćenih item-a i njihov uticaj na prosečnu štetu?
+```
 db.clean_player_stats.aggregate([
    {
        $project: {
