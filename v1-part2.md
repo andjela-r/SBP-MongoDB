@@ -54,6 +54,8 @@ db.clean_teamstats.createIndex({ matchid: 1 });
 db.clean_player_stats.createIndex({ matchid: 1 });
 ```
 Vreme izvršavanja: 01:00.741
+![Alt tekst](images/1.1.png)
+
 
 ### Upit 2: Koji su 10 najčešće korišćenih item-a u pobedničkim mečevima i njihov uticaj na performanse? 
 ```
